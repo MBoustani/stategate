@@ -1,7 +1,7 @@
 """stategate + OpenAI Agents SDK.
 
 Setup:
-    pip install "stategate[openai]"
+    pip install "stategate[openai] @ git+https://github.com/MBoustani/stategate"
     export OPENAI_API_KEY=sk-...
     python examples/openai_agents_refund.py
 """

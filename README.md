@@ -71,13 +71,20 @@ flowchart LR
 
 ## Install
 
+Install straight from GitHub (needs `git` on your machine):
+
 ```bash
-pip install stategate                 # core (only needs pydantic and pyyaml)
-pip install "stategate[openai]"       # + OpenAI Agents SDK adapter
-pip install "stategate[claude]"       # + Claude Agent SDK adapter
+# core (only needs pydantic and pyyaml)
+pip install "stategate @ git+https://github.com/MBoustani/stategate"
+
+# + OpenAI Agents SDK adapter
+pip install "stategate[openai] @ git+https://github.com/MBoustani/stategate"
+
+# + Claude Agent SDK adapter
+pip install "stategate[claude] @ git+https://github.com/MBoustani/stategate"
 ```
 
-> Until the first release is on PyPI, install from source: `pip install -e .` inside a clone of this repo.
+To pin a specific version, add a tag or commit at the end, e.g. `...stategate@v0.1.0`.
 
 ## Quick start
 

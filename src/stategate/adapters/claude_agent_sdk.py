@@ -42,7 +42,7 @@ try:
     from claude_agent_sdk import HookMatcher, SdkMcpTool, tool
 except ImportError as exc:  # pragma: no cover
     raise ImportError(
-        "The Claude Agent SDK is not installed. Install it with: pip install 'stategate[claude]'"
+        "The Claude Agent SDK is not installed. Install it with: pip install claude-agent-sdk"
     ) from exc
 
 from ..guard import Guard

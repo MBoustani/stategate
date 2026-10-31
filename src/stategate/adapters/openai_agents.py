@@ -34,7 +34,7 @@ try:
     from agents import FunctionTool, RunContextWrapper, function_tool
 except ImportError as exc:  # pragma: no cover
     raise ImportError(
-        "The OpenAI Agents SDK is not installed. Install it with: pip install 'stategate[openai]'"
+        "The OpenAI Agents SDK is not installed. Install it with: pip install openai-agents"
     ) from exc
 
 from ..guard import Guard

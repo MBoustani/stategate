@@ -1,7 +1,7 @@
 """stategate + Claude Agent SDK.
 
 Setup:
-    pip install "stategate[claude]"
+    pip install "stategate[claude] @ git+https://github.com/MBoustani/stategate"
     # The Claude Agent SDK also needs its CLI runtime - see the SDK's install docs.
     export ANTHROPIC_API_KEY=sk-ant-...
     python examples/claude_agent_refund.py
