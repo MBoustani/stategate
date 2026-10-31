@@ -1,12 +1,19 @@
-# stategate
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/MBoustani/stategate/main/docs/images/banner-dark.svg">
+    <img alt="stategate: deterministic tool guardrails for AI agents" src="https://raw.githubusercontent.com/MBoustani/stategate/main/docs/images/banner-light.svg" width="100%">
+  </picture>
+</p>
+
+<p align="center">
+  <a href="https://github.com/MBoustani/stategate/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/MBoustani/stategate/actions/workflows/ci.yml/badge.svg"></a>
+  <img alt="Python 3.10+" src="https://img.shields.io/badge/python-3.10%2B-blue">
+  <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-green">
+</p>
 
 **Deterministic tool guardrails for AI agents.** A trusted state that only code can change, plus a tool dependency graph that decides when each tool is allowed to run.
 
 > Prompts are suggestions. stategate is enforcement.
-
-[![CI](https://github.com/MBoustani/stategate/actions/workflows/ci.yml/badge.svg)](https://github.com/MBoustani/stategate/actions/workflows/ci.yml)
-![Python](https://img.shields.io/badge/python-3.10%2B-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
 
 ---
 
