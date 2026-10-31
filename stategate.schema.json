@@ -1,0 +1,203 @@
+{
+  "$defs": {
+    "Effect": {
+      "additionalProperties": false,
+      "description": "How the trusted state changes after a tool call succeeds.\n\nExamples (YAML)::\n\n    - set: identity_verified        # literal value\n      value: true\n      when: result.verified == true # only if the tool's result says so\n\n    - set: order_total              # copy a value out of the tool's result\n      from: result.total",
+      "properties": {
+        "set": {
+          "description": "Name of the state variable to change.",
+          "title": "Set",
+          "type": "string"
+        },
+        "value": {
+          "default": null,
+          "description": "Literal value to store. Use null to unset.",
+          "title": "Value"
+        },
+        "from": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Copy the value from the tool call: 'result.<field>' or 'args.<name>'.",
+          "title": "From"
+        },
+        "when": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional condition (may use result.*, args.*, state.*). The effect only applies if it holds.",
+          "title": "When"
+        }
+      },
+      "required": [
+        "set"
+      ],
+      "title": "Effect",
+      "type": "object"
+    },
+    "StateVar": {
+      "additionalProperties": false,
+      "description": "Declaration of one trusted state variable.",
+      "properties": {
+        "type": {
+          "default": "any",
+          "description": "Value type. Values of the wrong type are rejected.",
+          "enum": [
+            "bool",
+            "int",
+            "float",
+            "str",
+            "list",
+            "dict",
+            "any"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "default": {
+          "default": null,
+          "description": "Initial value. null means 'not set'.",
+          "title": "Default"
+        },
+        "enum": {
+          "anyOf": [
+            {
+              "items": {},
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "If given, the only allowed values.",
+          "title": "Enum"
+        },
+        "description": {
+          "default": "",
+          "description": "What this variable means. Shown to humans and to the agent.",
+          "title": "Description",
+          "type": "string"
+        }
+      },
+      "title": "StateVar",
+      "type": "object"
+    },
+    "ToolSpec": {
+      "additionalProperties": false,
+      "description": "The rules for one tool.",
+      "properties": {
+        "description": {
+          "default": "",
+          "description": "Optional note for humans.",
+          "title": "Description",
+          "type": "string"
+        },
+        "after": {
+          "description": "Tools that must have completed successfully (at least once) before this one.",
+          "items": {
+            "type": "string"
+          },
+          "title": "After",
+          "type": "array"
+        },
+        "requires": {
+          "description": "Conditions on state.* and args.* that must ALL hold before the tool may run.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Requires",
+          "type": "array"
+        },
+        "max_calls": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Maximum number of successful calls per session. 0 disables the tool.",
+          "title": "Max Calls"
+        },
+        "effects": {
+          "description": "How the trusted state changes when the tool succeeds.",
+          "items": {
+            "$ref": "#/$defs/Effect"
+          },
+          "title": "Effects",
+          "type": "array"
+        }
+      },
+      "title": "ToolSpec",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A complete stategate policy. See ``docs/policy-reference.md`` for the format.",
+  "properties": {
+    "version": {
+      "const": 1,
+      "default": 1,
+      "description": "Policy format version.",
+      "title": "Version",
+      "type": "integer"
+    },
+    "name": {
+      "default": "",
+      "description": "Optional name of this policy.",
+      "title": "Name",
+      "type": "string"
+    },
+    "description": {
+      "default": "",
+      "description": "Optional description.",
+      "title": "Description",
+      "type": "string"
+    },
+    "unlisted_tools": {
+      "default": "deny",
+      "description": "What to do with a tool that is not listed under 'tools'. 'deny' is the safe default.",
+      "enum": [
+        "deny",
+        "allow"
+      ],
+      "title": "Unlisted Tools",
+      "type": "string"
+    },
+    "state": {
+      "additionalProperties": {
+        "$ref": "#/$defs/StateVar"
+      },
+      "description": "Trusted state variables.",
+      "title": "State",
+      "type": "object"
+    },
+    "tools": {
+      "additionalProperties": {
+        "$ref": "#/$defs/ToolSpec"
+      },
+      "description": "Rules per tool.",
+      "title": "Tools",
+      "type": "object"
+    }
+  },
+  "title": "stategate policy",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

@@ -1,0 +1,89 @@
+# yaml-language-server: $schema=../stategate.schema.json
+#
+# Example policy: a customer-support agent that can issue refunds.
+#
+# The rules we want, no matter what the prompt says or what a user tries:
+#   1. The customer's identity must be verified before we look anything up.
+#   2. A refund can only go to the order we actually looked up, and never for
+#      more than that order's total.
+#   3. Only one refund per conversation.
+#   4. Closing an account needs a human manager's approval - the agent can't
+#      grant that itself.
+
+version: 1
+name: refund-support-agent
+description: Customer support agent that can look up orders and issue refunds.
+unlisted_tools: deny # any tool not listed below is blocked
+
+state:
+  identity_verified:
+    type: bool
+    default: false
+    description: The customer passed identity verification.
+  customer_email:
+    type: str
+    description: Email of the verified customer.
+  order_id:
+    type: str
+    description: The order that was looked up for this customer.
+  order_status:
+    type: str
+    enum: [none, found, refunded]
+    default: none
+    description: Where we are with the current order.
+  order_total:
+    type: float
+    description: Total amount of the looked-up order.
+  manager_approved:
+    type: bool
+    default: false
+    description: A human manager approved account closure (set by the app, never by a tool).
+
+tools:
+  verify_identity:
+    description: Check the one-time code the customer received by email.
+    effects:
+      - set: identity_verified
+        value: true
+        when: result.verified == true # only if the code was actually correct
+      - set: customer_email
+        from: args.email
+        when: result.verified == true
+
+  lookup_order:
+    requires:
+      - state.identity_verified == true
+    effects:
+      - set: order_id
+        from: result.order_id
+        when: result.found == true
+      - set: order_total
+        from: result.total
+        when: result.found == true
+      - set: order_status
+        value: found
+        when: result.found == true
+
+  issue_refund:
+    requires:
+      - state.identity_verified == true
+      - state.order_status == "found"
+      - args.order_id == $state.order_id # can't refund some other order
+      - args.amount > 0
+      - args.amount <= $state.order_total # can't refund more than was paid
+    max_calls: 1
+    effects:
+      - set: order_status
+        value: refunded
+
+  send_confirmation_email:
+    after: [issue_refund]
+    requires:
+      - state.order_status == "refunded"
+
+  close_account:
+    requires:
+      - state.identity_verified == true
+      - state.manager_approved == true # only the application can set this
+
+  get_trusted_state: {} # read-only tool for the agent, always allowed
