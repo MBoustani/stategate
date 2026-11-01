@@ -15,6 +15,8 @@
 
 > Prompts are suggestions. stategate is enforcement.
 
+**Website and live demo:** https://mboustani.github.io/stategate
+
 ---
 
 ## The problem
